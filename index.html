@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Git — система контролю версій | ПР 1.2</title>
+  <meta name="description" content="Практична робота 1.2: опрацювання теми Git та GitHub Pages">
+  <style>
+    :root {
+      --bg: #0f1419;
+      --card: #1a2029;
+      --text: #e6e6e6;
+      --muted: #9aa5b1;
+      --accent: #f05033; /* фірмовий колір Git */
+      --accent2: #4ea8de;
+      --code-bg: #0b0f14;
+      --border: #2a323d;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+    }
+    header {
+      background: linear-gradient(135deg, #f05033 0%, #a8321f 100%);
+      padding: 56px 20px 40px;
+      text-align: center;
+    }
+    header h1 { font-size: 2.6rem; margin-bottom: 8px; }
+    header p { font-size: 1.1rem; opacity: .92; }
+    nav {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(15, 20, 25, .95);
+      border-bottom: 1px solid var(--border);
+      display: flex; flex-wrap: wrap; justify-content: center; gap: 4px;
+      padding: 10px;
+    }
+    nav a {
+      color: var(--text); text-decoration: none;
+      padding: 6px 14px; border-radius: 6px; font-size: .95rem;
+    }
+    nav a:hover { background: var(--accent); }
+    main { max-width: 960px; margin: 0 auto; padding: 32px 20px 60px; }
+    section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 28px;
+      scroll-margin-top: 70px;
+    }
+    h2 {
+      color: var(--accent);
+      font-size: 1.6rem;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--border);
+    }
+    h3 { color: var(--accent2); margin: 18px 0 8px; }
+    p { margin-bottom: 12px; }
+    ul { margin: 0 0 12px 22px; }
+    li { margin-bottom: 6px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px; margin-top: 12px;
+    }
+    .tile {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .tile strong { display: block; margin-bottom: 4px; }
+    .tile span { color: var(--muted); font-size: .95rem; }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    th, td { padding: 10px 12px; border: 1px solid var(--border); text-align: left; vertical-align: top; }
+    th { background: var(--code-bg); color: var(--accent2); }
+    .cmd {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .cmd-head {
+      padding: 10px 16px;
+      background: #232b36;
+      font-weight: 600;
+    }
+    .cmd-head .num {
+      display: inline-block; width: 28px; height: 28px; line-height: 28px;
+      text-align: center; border-radius: 50%;
+      background: var(--accent); margin-right: 10px; font-size: .9rem;
+    }
+    pre {
+      padding: 14px 16px; overflow-x: auto;
+      font-family: Consolas, "Courier New", monospace; font-size: .95rem;
+    }
+    .c { color: #6a9955; }   /* коментар */
+    .k { color: #f0a050; }   /* команда */
+    .cmd p { padding: 0 16px 12px; color: var(--muted); margin: 0; }
+    .cert { text-align: center; }
+    .cert img {
+      max-width: 100%; border-radius: 8px;
+      border: 1px solid var(--border); margin: 12px 0;
+    }
+    a { color: var(--accent2); }
+    .btn {
+      display: inline-block; background: var(--accent); color: #fff;
+      padding: 10px 20px; border-radius: 8px; text-decoration: none; margin-top: 8px;
+    }
+    .btn:hover { opacity: .9; }
+    footer {
+      text-align: center; color: var(--muted);
+      padding: 24px; border-top: 1px solid var(--border); font-size: .9rem;
+    }
+    @media (max-width: 600px) {
+      header h1 { font-size: 1.9rem; }
+      section { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Git — система контролю версій</h1>
+  <p>Практична робота 1.2 · Системне програмування</p>
+</header>
+
+<nav>
+  <a href="#vcs">Що таке СКВ</a>
+  <a href="#features">Можливості Git</a>
+  <a href="#commands">10 команд</a>
+  <a href="#certificate">Сертифікат</a>
+  <a href="#sources">Джерела</a>
+</nav>
+
+<main>
+
+  <!-- 1. Коротка інформація -->
+  <section id="vcs">
+    <h2>1. Системи контролю версій та Git</h2>
+    <p>
+      <strong>Система контролю версій (СКВ, VCS — Version Control System)</strong> — це програмне
+      забезпечення, яке зберігає історію змін файлів проєкту. Воно дозволяє повернутися до будь-якої
+      попередньої версії, побачити, хто і коли вніс зміни, та організувати спільну роботу кількох
+      розробників над одним кодом.
+    </p>
+
+    <h3>Типи систем контролю версій</h3>
+    <table>
+      <tr><th>Тип</th><th>Принцип роботи</th><th>Приклади</th></tr>
+      <tr>
+        <td>Локальні</td>
+        <td>Історія версій зберігається лише на комп'ютері одного користувача.</td>
+        <td>RCS</td>
+      </tr>
+      <tr>
+        <td>Централізовані</td>
+        <td>Є один центральний сервер з історією; клієнти отримують з нього лише робочі копії.</td>
+        <td>SVN (Subversion), CVS, Perforce</td>
+      </tr>
+      <tr>
+        <td>Розподілені</td>
+        <td>Кожен учасник має повну копію репозиторію з усією історією змін.</td>
+        <td>Git, Mercurial</td>
+      </tr>
+    </table>
+
+    <h3>Що таке Git</h3>
+    <p>
+      <strong>Git</strong> — розподілена система контролю версій з відкритим кодом. Її створив
+      <strong>Лінус Торвальдс</strong> у <strong>2005 році</strong> для розробки ядра Linux, після того як
+      спільнота втратила можливість безкоштовно користуватися системою BitKeeper. Сьогодні Git —
+      найпоширеніша СКВ у світі, на ній працюють сервіси GitHub, GitLab, Bitbucket.
+    </p>
+    <p>
+      На відміну від багатьох інших систем, Git зберігає не різницю між файлами, а <em>знімки</em>
+      (snapshots) стану всього проєкту. Кожен знімок (коміт) ідентифікується унікальним хешем SHA-1,
+      тому історію неможливо непомітно змінити.
+    </p>
+
+    <h3>Три стани файлів у Git</h3>
+    <ul>
+      <li><strong>Modified (змінений)</strong> — файл змінено, але ще не підготовлено до коміту;</li>
+      <li><strong>Staged (індексований)</strong> — зміни позначено для наступного коміту (<code>git add</code>);</li>
+      <li><strong>Committed (зафіксований)</strong> — дані збережено в локальній базі репозиторію (<code>git commit</code>).</li>
+    </ul>
+  </section>
+
+  <!-- 2. Можливості та переваги -->
+  <section id="features">
+    <h2>2. Основні можливості та переваги Git</h2>
+    <div class="grid">
+      <div class="tile"><strong>Розподіленість</strong><span>Кожен розробник має повну копію репозиторію, тож робота можлива навіть без інтернету.</span></div>
+      <div class="tile"><strong>Швидкість</strong><span>Більшість операцій виконуються локально, тому працюють миттєво.</span></div>
+      <div class="tile"><strong>Гілки (branches)</strong><span>Легке створення та злиття гілок для паралельної розробки нових функцій.</span></div>
+      <div class="tile"><strong>Повна історія змін</strong><span>Можна побачити, хто, коли і що змінив, та повернутися до будь-якої версії.</span></div>
+      <div class="tile"><strong>Цілісність даних</strong><span>Усі об'єкти захищені контрольними сумами SHA-1 — пошкодження чи підміну буде виявлено.</span></div>
+      <div class="tile"><strong>Командна робота</strong><span>Зручна спільна робота через віддалені репозиторії, pull request та code review.</span></div>
+      <div class="tile"><strong>Індекс (staging area)</strong><span>Можна точно вибрати, які зміни потраплять у коміт.</span></div>
+      <div class="tile"><strong>Безкоштовний та відкритий</strong><span>Розповсюджується за ліцензією GPL v2, працює на Windows, Linux, macOS.</span></div>
+      <div class="tile"><strong>Екосистема</strong><span>Інтеграція з GitHub, GitLab, Bitbucket, IDE та системами CI/CD.</span></div>
+    </div>
+  </section>
+
+  <!-- 3. 10 команд -->
+  <section id="commands">
+    <h2>3. 10 базових команд Git з коментарями</h2>
+
+    <div class="cmd">
+      <div class="cmd-head"><span class="num">1</span>git config — налаштування</div>
+      <pre><span class="c"># Вказати ім'я та email автора комітів (виконується один раз)</span>
+<span class="k">git config --global user.name</span> "Ivan Petrenko"
+<span class="k">git config --global user.email</span> "ivan@example.com"</pre>
+      <p>Задає дані, які будуть підписувати кожен коміт.</p>
+    </div>
+
+    <div class="cmd">
+      <div class="cmd-head"><span class="num">2</span>git init — створення репозиторію</div>
+      <pre><span class="c"># Ініціалізувати новий репозиторій у поточній папці</span>
+<span class="k">git init</span></pre>
+      <p>Створює приховану папку <code>.git</code>, у якій зберігається вся історія проєкту.</p>
+    </div>
+
+    <div class="cmd">
+      <div class="cmd-head"><span class="num">3</span>git clone — копіювання репозиторію</div>
+      <pre><span class="c"># Завантажити існуючий репозиторій з GitHub</span>
+<span class="k">git clone</span> https://github.com/user/repo.git</pre>
+      <p>Створює локальну копію віддаленого репозиторію разом з усією історією.</p>
+    </div>
+
+    <div class="cmd">
+      <div class="cmd-head"><span class="num">4</span>git status — стан файлів</div>
+      <pre><span class="c"># Показати змінені, нові та проіндексовані файли</span>
+<span class="k">git status</span></pre>
+      <p>Найчастіше вживана команда — показує, що змінилося з моменту останнього коміту.</p>
+    </div>
+
+    <div class="cmd">
+      <div class="cmd-head"><span class="num">5</span>git add — додавання до індексу</div>
+      <pre><span class="c"># Додати один файл до індексу (staging area)</span>
+<span class="k">git add</span> index.html
+<span class="c"># Додати всі змінені файли</span>
+<span class="k">git add .</span></pre>
+      <p>Готує зміни до фіксації у наступному коміті.</p>
+    </div>
+
+    <div class="cmd">
+      <div class="cmd-head"><span class="num">6</span>git commit — фіксація змін</div>
+      <pre><span class="c"># Зберегти проіндексовані зміни з повідомленням</span>
+<span class="k">git commit -m</span> "Додано головну сторінку"</pre>
+      <p>Створює новий знімок проєкту в історії з описом зроблених змін.</p>
+    </div>
+
+    <div class="cmd">
+      <div class="cmd-head"><span class="num">7</span>git log — історія комітів</div>
+      <pre><span class="c"># Переглянути історію комітів у короткому вигляді</span>
+<span class="k">git log --oneline</span></pre>
+      <p>Показує список комітів: хеш, автора, дату та повідомлення.</p>
+    </div>
+
+    <div class="cmd">
+      <div class="cmd-head"><span class="num">8</span>git branch / git checkout — робота з гілками</div>
+      <pre><span class="c"># Створити нову гілку</span>
+<span class="k">git branch</span> feature
+<span class="c"># Перейти на неї (або одразу: git checkout -b feature)</span>
+<span class="k">git checkout</span> feature</pre>
+      <p>Гілки дозволяють розробляти нові функції, не зачіпаючи основний код.</p>
+    </div>
+
+    <div class="cmd">
+      <div class="cmd-head"><span class="num">9</span>git merge — злиття гілок</div>
+      <pre><span class="c"># Перейти в основну гілку і злити в неї зміни з feature</span>
+<span class="k">git checkout</span> main
+<span class="k">git merge</span> feature</pre>
+      <p>Об'єднує історію двох гілок в одну.</p>
+    </div>
+
+    <div class="cmd">
+      <div class="cmd-head"><span class="num">10</span>git push / git pull — синхронізація з сервером</div>
+      <pre><span class="c"># Відправити локальні коміти на GitHub</span>
+<span class="k">git push</span> origin main
+<span class="c"># Отримати та злити зміни з віддаленого репозиторію</span>
+<span class="k">git pull</span> origin main</pre>
+      <p>Обмін змінами між локальним та віддаленим репозиторієм.</p>
+    </div>
+  </section>
+
+  <!-- 4. Сертифікат -->
+  <section id="certificate" class="cert">
+    <h2>4. Сертифікат курсу по Git</h2>
+    <p>Сертифікат про проходження онлайн-курсу з Git:</p>
+    <!-- Замініть certificate.jpg на зображення свого сертифіката -->
+    <img src="certificate.jpg" alt="Сертифікат курсу по Git">
+    <br>
+    <!-- Замініть посилання на посилання для перевірки сертифіката -->
+    <a class="btn" href="#" target="_blank">Перевірити сертифікат</a>
+  </section>
+
+  <!-- 5. Джерела -->
+  <section id="sources">
+    <h2>5. Джерела інформації</h2>
+    <ul>
+      <li><a href="https://git-scm.com/book/uk/v2" target="_blank">Pro Git (українською) — Scott Chacon, Ben Straub</a></li>
+      <li><a href="https://git-scm.com/docs" target="_blank">Офіційна документація Git</a></li>
+      <li><a href="https://docs.github.com/en/pages" target="_blank">Документація GitHub Pages</a></li>
+      <li><a href="https://www.atlassian.com/git/tutorials" target="_blank">Atlassian Git Tutorials</a></li>
+      <li><a href="https://www.w3schools.com/git/" target="_blank">W3Schools — Git Tutorial</a></li>
+      <li><a href="https://uk.wikipedia.org/wiki/Git" target="_blank">Git — Вікіпедія</a></li>
+    </ul>
+  </section>
+
+</main>
+
+<footer>
+  ПР 1.2 · GitHub Pages · Системне програмування · 2026
+</footer>
+
+</body>
+</html>
